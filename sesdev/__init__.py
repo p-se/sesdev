@@ -2,6 +2,7 @@ import fnmatch
 import json
 import logging
 from os import environ, path
+from os.path import dirname, basename
 import re
 import sys
 
@@ -498,10 +499,16 @@ def _gen_settings_dict(
         # pylint: disable=invalid-name
         for repo_url in repo:
             count += 1
+            if repo_url.endswith('.repo'):
+                name = basename(repo_url)
+                url = dirname(repo_url)
+            else:
+                name = 'custom-repo-{}'.format(count)
+                url = repo_url
             settings_dict['custom_repos'].append(
                 {
-                    'name': 'custom-repo-{}'.format(count),
-                    'url': repo_url,
+                    'name': name,
+                    'url': url,
                     'priority': Constant.ZYPPER_PRIO_ELEVATED if repo_priority else None
                 })
 
